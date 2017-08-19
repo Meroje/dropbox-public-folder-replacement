@@ -2,7 +2,8 @@
 
 Dropbox are [removing support for the Public folder functionality](https://www.dropbox.com/help/files-folders/public-folder).
 
-This is a drop-in script replacement for your Dropbox public folder links.
+~~This is a drop-in script replacement for your Dropbox public folder links.~~
+This works with nginx and X-Accel-Redirect header to have a caching proxy to your dropbox files so they download faster on subsequent requests
 
 As Dropbox no longer provides the service, DPFR runs on your web host instead. Files are still fetched in real-time from Dropbox
 using their [API](https://www.dropbox.com/developers/documentation/http/overview).
@@ -23,14 +24,16 @@ Instead of manually generating new Dropbox share links, this enables you to simp
 
 ### Requirements
 
-This script is tailored to run on most conventional web hosts that support a modern version of PHP.
+~~This script is tailored to run on most conventional web hosts that support a modern version of PHP.~~
+You need to be able to launch docker containers, or to run nginx and php-fpm
 
-* PHP 5.5
+* PHP ~~5.5~~ latest
 * mbstring
 
 ### Setup
 
-Download the latest release version [here](https://github.com/khromov/dropbox-public-folder-replacement/releases/download/1.0/dropbox-public-folder.zip). If you don't download the release version you will need to install dependencies via Composer.
+~~Download the latest release version [here](https://github.com/khromov/dropbox-public-folder-replacement/releases/download/1.0/dropbox-public-folder.zip). If you don't download the release version you will need to install dependencies via Composer.~~
+Clone and run `composer install` in the php folder
 
 #### Setting up your Dropbox app
 
@@ -54,43 +57,19 @@ Generating OAuth token
 
 #### Configuring DPFR
 
-* Start by uploading the script to your web host.
-* Copy the file `config.sample.php` to `config.php`.
-* Edit `config.php` with the value obtained in the previous step.
+* ~~Start by uploading the script to your web host.~~
+* Copy the file ~~`config.sample.php` to `config.php`.~~ `php/.env.example` to `php/.env`
+* Edit ~~`config.php`~~ `php/.env` with the value obtained in the previous step.
     * `appKey` = App key
     * `appSecret` = App secret
     * `accessToken` = Generated access token
-* Move or copy your files from the `Public` folder to the `Apps/Public folder replacement` folder. 
 
-#### Web server: Apache
+* Move or copy your files from the `Public` folder to the `Apps/Public folder replacement` folder.
 
-If you have put the script in a subfolder, please modify the `.htaccess` file. For example:
+#### Web server: Docker
 
-If your script URL is: 
+You can start the stack with `docker-compose up`, then browse your files at http://localhost:5000/
 
-```
-http://mysite.com/dropbox/
-```
+#### Web server: Manual config
 
-Your `.htaccess` file should read:
-
-```
-ErrorDocument /dropbox/index.php
-```
-
-#### Web server: Nginx
-
-Make sure to rewrite all your requests to `index.php`. For example this can be done using the following location block:
-
-```
-location / {
-    try_files $uri $uri/ /index.php;
-}
-```
-
-### To-do
-
-* Add file cache
-* Nicer error page
-
-Pull requests/issues are welcome.
+Config files are provided for nginx in the `web` folder, good luck !
